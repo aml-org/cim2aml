@@ -1,7 +1,51 @@
 {
-  "ical": "http://www.w3.org/2002/12/cal/ical#",
-  "xsd": "http://www.w3.org/2001/XMLSchema#",
-  "ical:dtstart": {
-    "@type": "xsd:time"
-  }
+    "@base": "http://cim.org/model/",
+
+    "cim": "http://cim.org/model/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "sh": "http://www.w3.org/ns/shacl#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+
+    "version": "cim:version",
+    "classConcepts": "cim:classes",
+    "propertyConcepts": "cim:properties",
+
+    "name": "rdfs:label",
+    "description": "rdfs:comment",
+    "Class": "rdfs:Class",
+    "Property": "rdf:Property",
+    "Literal": "rdfs:Literal",
+    "domain": {
+      "@id": "rdfs:domain",
+      "@type": "@id"
+    },
+    "range": {
+      "@id": "rdfs:range",
+      "@type": "@id"
+    },
+    "subClassOf": {
+      "@id": "rdfs:subClassOf",
+      "@type": "@id"
+    },
+    "subPropertyOf": {
+      "@id": "rdfs:subPropertyOf",
+      "@type": "@id"
+    },
+
+    "properties": "sh:properties",
+    "path": {
+      "@id": "sh:path",
+      "@type": "@id"
+    },
+    "node": {
+      "@id": "sh:node",
+      "@type": "@id"
+    },
+    "minCount": "sh:minCount",
+    "datatype": {
+      "@id": "sh:datatype",
+      "@type": "@id"
+    },
+    "Shape": "sh:Shape"
 }

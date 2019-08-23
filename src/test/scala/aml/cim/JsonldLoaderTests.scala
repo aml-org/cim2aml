@@ -6,7 +6,7 @@ import org.scalatest.FunSuite
 class JsonldLoaderTests extends FunSuite {
 
   test("It should load a jsonld document"){
-    val result = JsonldLoader.fromFile("src/test/resources/simple.jsonld")
+    val result = JsonldLoader.fromFile("src/test/resources/jsonld_example/simple.jsonld")
     assert(result.size() == 3)
     val results = result.listObjectsOfProperty(result.createProperty("http://www.w3.org/2002/12/cal/ical#dtstart"))
     assert(results.hasNext)
@@ -14,7 +14,7 @@ class JsonldLoaderTests extends FunSuite {
   }
 
   test("It should load a jsonld document with an specific context"){
-    val result = JsonldLoader.fromFile("src/test/resources/simple.jsonld", "src/test/resources/context.jsonld")
+    val result = JsonldLoader.fromFile("src/test/resources/jsonld_example/simple.jsonld", "src/test/resources/jsonld_example/context.jsonld")
     assert(result.size() == 3)
     val results = result.listObjectsOfProperty(result.createProperty("http://www.w3.org/2002/12/cal/ical#dtstart"))
     assert(results.hasNext)

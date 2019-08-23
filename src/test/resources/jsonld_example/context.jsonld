@@ -1,0 +1,7 @@
+{
+  "ical": "http://www.w3.org/2002/12/cal/ical#",
+  "xsd": "http://www.w3.org/2001/XMLSchema#",
+  "ical:dtstart": {
+    "@type": "xsd:time"
+  }
+}

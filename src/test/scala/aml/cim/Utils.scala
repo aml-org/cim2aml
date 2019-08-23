@@ -4,10 +4,12 @@ import org.apache.jena.rdf.model.Model
 
 trait Utils {
 
+  val CONTEXT_PATH = "src/test/resources/context.jsonld"
+
   protected def loadExample: Model = {
     JsonldLoader.fromFile(
       "src/test/resources/concepts_example/concepts.jsonld",
-      "src/test/resources/concepts_example/context.jsonld"
+      CONTEXT_PATH
     )
   }
 }

@@ -1,0 +1,30 @@
+{
+  "@context": "http://cim.org/context.jsonld",
+  "@id": "PlaceFA",
+  "@type": "meta:FunctionalArea",
+  "meta:version": "1.0",
+  "meta:schemas": [
+    {
+      "@id": "Place",
+      "@type": "Shape",
+      "properties": [
+        {
+          "path": "geoCode",
+          "node": "GeoCode",
+          "minCount": 1
+        }
+      ]
+    },
+    {
+      "@id": "GeoCode",
+      "@type": "Shape",
+      "properties": [
+        {
+          "path": "icaoCode",
+          "datatype": "xsd:string",
+          "minCount": 1
+        }
+      ]
+    }
+  ]
+}
