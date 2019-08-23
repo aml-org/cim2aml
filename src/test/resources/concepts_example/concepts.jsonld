@@ -46,7 +46,7 @@
 	    "@id": "icaoCode",
 	    "@type": "Property",
 	    "name": "ICAO Code",
-	    "description": "ICAO code",
+	    "description": "ICAO code description",
 	    "domain": [
 		  "Place"
 	    ],

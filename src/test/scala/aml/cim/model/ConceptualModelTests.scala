@@ -1,10 +1,10 @@
 package aml.cim.model
 
-import aml.cim.{CIM, JsonldLoader}
+import aml.cim.{CIM, JsonldLoader, Utils}
 import org.apache.jena.rdf.model.Model
 import org.scalatest.FunSuite
 
-class ConceptualModelTests extends FunSuite {
+class ConceptualModelTests extends FunSuite with Utils {
 
   test("it should load rdfs classes into the conceptual model") {
     val jsonld = loadExample
@@ -45,16 +45,8 @@ class ConceptualModelTests extends FunSuite {
     assert(concepts.size == 1)
 
     val fa = concepts.head
-    println(fa)
     assert(fa.name == "PlaceFA")
     assert(fa.classes.size == 4)
     assert(fa.properties.size == 2)
-  }
-
-  protected def loadExample: Model = {
-    JsonldLoader.fromFile(
-      "src/test/resources/concepts_example/concepts.jsonld",
-      "src/test/resources/concepts_example/context.jsonld"
-    )
   }
 }

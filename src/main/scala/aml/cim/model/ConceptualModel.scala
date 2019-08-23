@@ -6,7 +6,9 @@ import org.apache.jena.rdf.model.Model
 
 case class FunctionalArea(id: String, version: String, name: String, description: Option[String], classes: Seq[String], properties: Seq[String])
 case class RdfsClass(id: String, name: String, displayName: Option[String], description: Option[String], superClasses: Seq[String])
-case class RdfProperty(id: String, name: String, displayName: Option[String], description: Option[String], domains: Seq[String], ranges: Seq[String])
+case class RdfProperty(id: String, name: String, displayName: Option[String], description: Option[String], domains: Seq[String], ranges: Seq[String]) {
+  def isDataProperty: Boolean = ranges.contains(CIM.DATATYPE)
+}
 
 class ConceptualModel(val jsonld: Model) extends ModelHelper {
 
@@ -82,5 +84,9 @@ class ConceptualModel(val jsonld: Model) extends ModelHelper {
       )
     }
   }
+
+  def findClassById(id: String): Option[RdfsClass] = rdfsClasses.find(_.id == id)
+
+  def findPropertyById(id: String): Option[RdfProperty] = rdfProperties.find(_.id == id)
 
 }

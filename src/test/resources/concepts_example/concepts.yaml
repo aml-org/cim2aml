@@ -1,0 +1,28 @@
+#%Vocabulary 1.0
+base: http://cim.org/model/
+vocabulary: PlaceFA
+classTerms:
+  Place:
+    displayName: Place
+    description: A Place description
+    properties:
+      - icaoCode
+      - geoCode
+  GeoCode:
+    displayName: Geo-code
+    description: A Geo-code description
+  Location:
+    displayName: Location
+    description: A Location description
+    extends: Place
+  Address:
+    displayName: Address
+    description: An Adress description
+    extends: Place
+propertyTerms:
+  icaoCode:
+    displayName: ICAO Code
+    description: ICAO code description
+    range: any
+  geoCode:
+    range: GeoCode
