@@ -1,7 +1,7 @@
 package aml.cim.model
 
 import amf.core.vocabulary.Namespace
-import org.apache.jena.rdf.model.{Literal, Model, RDFNode, ResIterator, Resource}
+import org.apache.jena.rdf.model.{AnonId, Literal, Model, RDFNode, ResIterator, Resource}
 import org.apache.jena.util.iterator.ExtendedIterator
 
 import scala.collection.mutable
@@ -24,7 +24,7 @@ trait ModelHelper {
 
   def findProperty(id: String, property: String): Option[Literal] = {
     val it = jsonld.listObjectsOfProperty(
-      jsonld.createResource(id),
+      subject(id),
       jsonld.createProperty(property)
     )
 
@@ -37,12 +37,15 @@ trait ModelHelper {
 
   def findRelatedResources(id: String, property: String): mutable.ArrayBuffer[Resource] = {
     val it: ExtendedIterator[RDFNode] = jsonld.listObjectsOfProperty(
-      jsonld.createResource(id),
+      subject(id),
       jsonld.createProperty(property)
     )
 
     iterateResources(it,(n: RDFNode) => n.asResource())
   }
+
+  def findRelatedResource(id: String, property: String): Option[Resource] =
+    findRelatedResources(id, property).headOption
 
   def iterateResources[T,U](it: ExtendedIterator[U], c: (U) => T): mutable.ArrayBuffer[T] = {
     var acc: mutable.ArrayBuffer[T] = mutable.ArrayBuffer()
@@ -50,6 +53,14 @@ trait ModelHelper {
       acc += c(it.next())
     }
     acc
+  }
+
+  def subject(id: String): Resource = {
+    if (id.startsWith("http")) {
+      jsonld.createResource(id)
+    } else {
+      jsonld.createResource(new AnonId(id))
+    }
   }
 
 }

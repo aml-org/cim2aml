@@ -1,13 +1,12 @@
 package aml.cim.model
 
-import aml.cim.{CIM, JsonldLoader, Utils}
-import org.apache.jena.rdf.model.Model
+import aml.cim.{CIM, Utils}
 import org.scalatest.FunSuite
 
 class ConceptualModelTests extends FunSuite with Utils {
 
   test("it should load rdfs classes into the conceptual model") {
-    val jsonld = loadExample
+    val jsonld = loadExample("concepts")
     val conceptualModel = new ConceptualModel(jsonld)
     val concepts = conceptualModel.rdfsClasses
     assert(concepts.nonEmpty)
@@ -24,7 +23,7 @@ class ConceptualModelTests extends FunSuite with Utils {
   }
 
   test("it should load rdf properties into the conceptual model") {
-    val jsonld = loadExample
+    val jsonld = loadExample("concepts")
     val conceptualModel = new ConceptualModel(jsonld)
     val concepts = conceptualModel.rdfProperties
 
@@ -37,7 +36,7 @@ class ConceptualModelTests extends FunSuite with Utils {
   }
 
   test("it should load a cim functional area into the conceptual model") {
-    val jsonld = loadExample
+    val jsonld = loadExample("concepts")
     val conceptualModel = new ConceptualModel(jsonld)
     val concepts = conceptualModel.functionalAreas
 

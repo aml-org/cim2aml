@@ -12,7 +12,7 @@ class VocabularyGeneratorTests extends FunSuite with Utils with PlatformSecrets 
   test("It should generate a AML vocabulary for each functional area in a conceptual model") {
     AMF.init().get()
 
-    val jsonld = loadExample
+    val jsonld = loadExample("concepts")
     val conceptualModel = new ConceptualModel(jsonld)
     val functionalArea = conceptualModel.functionalAreas.head
     val vocabulary = new VocabularyGenerator(conceptualModel, functionalArea).generate()

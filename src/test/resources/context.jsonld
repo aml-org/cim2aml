@@ -10,6 +10,7 @@
     "version": "cim:version",
     "classConcepts": "cim:classes",
     "propertyConcepts": "cim:properties",
+    "schemas": "cim:schemas",
 
     "name": "rdfs:label",
     "description": "rdfs:comment",
@@ -33,7 +34,7 @@
       "@type": "@id"
     },
 
-    "properties": "sh:properties",
+    "properties": "sh:property",
     "path": {
       "@id": "sh:path",
       "@type": "@id"

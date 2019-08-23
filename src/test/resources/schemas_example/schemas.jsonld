@@ -1,9 +1,9 @@
 {
   "@context": "http://cim.org/context.jsonld",
   "@id": "PlaceFA",
-  "@type": "meta:FunctionalArea",
-  "meta:version": "1.0",
-  "meta:schemas": [
+  "@type": "FunctionalArea",
+  "version": "1.0",
+  "schemas": [
     {
       "@id": "Place",
       "@type": "Shape",
@@ -21,8 +21,7 @@
       "properties": [
         {
           "path": "icaoCode",
-          "datatype": "xsd:string",
-          "minCount": 1
+          "datatype": "xsd:string"
         }
       ]
     }
