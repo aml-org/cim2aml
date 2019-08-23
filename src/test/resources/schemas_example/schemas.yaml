@@ -1,0 +1,28 @@
+#%Dialect 1.0
+nodeMappings:
+  Place:
+    classTerm: PlaceFA.Place
+    mapping:
+      geoCode:
+        propertyTerm: PlaceFA.geoCode
+        range: GeoCode
+        minimum: 1.0
+  GeoCode:
+    classTerm: PlaceFA.GeoCode
+    mapping:
+      icaoCode:
+        propertyTerm: PlaceFA.icaoCode
+        range: string
+external:
+  PlaceFA: http://cim.org/model/
+dialect: PlaceFA
+version: "1.0"
+documents:
+  root:
+    declares:
+      PlaceSchemas: Place
+      GeoCodeSchemas: GeoCode
+  fragments:
+    encodes:
+      Place: Place
+      GeoCode: GeoCode
