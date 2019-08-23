@@ -1,0 +1,58 @@
+{
+    "@context": "http://cim.org/context.jsonld",
+    "@id": "PlaceFA",
+    "@type": "FunctionalArea",
+    "version": "1.0",
+    "classConcepts": [
+	{
+	    "@id": "Place",
+	    "@type": "Class",
+	    "name": "Place",
+	    "description": "A Place description"
+	},
+	{
+	    "@id": "Location",
+	    "@type": "Class",
+	    "subClassOf": "Place",
+	    "name": "Location",
+	    "description": "A Location description"
+	},
+	{
+	    "@id": "Address",
+	    "@type": "Class",
+	    "subClassOf": "Place",
+	    "name": "Address",
+	    "description": "An Adress description"
+	},
+	{
+	    "@id": "GeoCode",
+	    "@type": "Class",
+	    "name": "Geo-code",
+	    "description": "A Geo-code description"
+	}
+    ],
+    "propertyConcepts": [
+	{
+	    "@id": "geoCode",
+	    "@type": "Property",
+	    "domain": [
+		  "Place"
+	    ],
+	    "range": [
+		  "GeoCode"
+	    ]
+	},
+	{
+	    "@id": "icaoCode",
+	    "@type": "Property",
+	    "name": "ICAO Code",
+	    "description": "ICAO code",
+	    "domain": [
+		  "Place"
+	    ],
+	    "range": [
+		  "DataType"
+	    ]
+	}
+    ]
+}
