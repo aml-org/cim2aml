@@ -31,4 +31,17 @@ class SchemasModelTests extends FunSuite with Utils  {
     assert(!icaoCodeProp.mandatory)
   }
 
+  test("it should load a functional area with all the schemas") {
+    val jsonld = loadExample("schemas")
+    val schemasModel = new SchemasModel(jsonld)
+    val concepts = schemasModel.functionalAreas
+
+    assert(concepts.nonEmpty)
+    assert(concepts.size == 1)
+
+    val fa = concepts.head
+    assert(fa.name == "PlaceFA")
+    assert(fa.shapes.length == 2)
+  }
+
 }

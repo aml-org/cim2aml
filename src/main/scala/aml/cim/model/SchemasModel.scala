@@ -1,19 +1,11 @@
 package aml.cim.model
 
 import amf.core.vocabulary.Namespace
+import aml.cim.CIM
+import aml.cim.model.entities.{FunctionalArea, ShaclProperty, ShaclShape}
 import org.apache.jena.rdf.model.Model
 
-case class ShaclShape(id: String, name: String, properties: Seq[ShaclProperty])
-case class ShaclProperty(path: String, mandatory: Boolean, objectRange: Option[String], scalarRange: Option[String])
-
 class SchemasModel(val jsonld: Model) extends ModelHelper {
-
-  protected val SH_SHAPE: String = (Namespace.Shacl + "Shape").iri()
-  protected val SH_PROPERTY: String = (Namespace.Shacl + "property").iri()
-  protected val SH_PATH: String = (Namespace.Shacl + "path").iri()
-  protected val SH_MIN_COUNT: String = (Namespace.Shacl + "minCount").iri()
-  protected val SH_DATATYPE: String = (Namespace.Shacl + "datatype").iri()
-  protected val SH_NODE: String = (Namespace.Shacl + "node").iri()
 
   lazy val shapes: Seq[ShaclShape] = {
     findInstancesOf(SH_SHAPE) map { shaclShape =>
@@ -52,6 +44,25 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
         mandatory,
         objectRange,
         datatypeRange
+      )
+    }
+  }
+
+  lazy val functionalAreas: Seq[FunctionalArea] = {
+    findInstancesOf(CIM.FUNCTIONAL_AREA) map { fa =>
+      val id = fa.getURI
+      val name = findProperty(id, RDFS_LABEL).map(_.getString).getOrElse(id.split("/").last)
+      val description = findProperty(id, RDFS_COMMENT).map(_.getString)
+      val version = findProperty(id, CIM.VERSION).map(_.getString).getOrElse(throw new Exception(s"Missing mandatory version for functional area $id"))
+      val shapes = findRelatedResources(id, CIM.SCHEMAS).map(_.getURI)
+      FunctionalArea(
+        id,
+        version,
+        name,
+        description,
+        Nil,
+        Nil,
+        shapes
       )
     }
   }

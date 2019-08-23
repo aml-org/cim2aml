@@ -1,10 +1,11 @@
-package aml.cim.model
+package aml.cim.generators
 
 import amf.client.AMF
 import amf.client.model.document.Vocabulary
 import amf.client.render.Aml10Renderer
 import amf.core.unsafe.PlatformSecrets
 import aml.cim.Utils
+import aml.cim.model.ConceptualModel
 import org.scalatest.FunSuite
 
 class VocabularyGeneratorTests extends FunSuite with Utils with PlatformSecrets {

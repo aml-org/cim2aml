@@ -11,6 +11,24 @@ trait ModelHelper {
 
   val RDF_TYPE: String = Namespace.Rdf.base + "type"
 
+  protected val RDFS_CLASS: String = (Namespace.Rdfs + "Class").iri()
+  protected  val RDFS_LABEL: String = (Namespace.Rdfs + "label").iri()
+  protected val RDFS_COMMENT: String = (Namespace.Rdfs + "comment").iri()
+  protected  val RDFS_SUBCLASS_OF: String = (Namespace.Rdfs + "subClassOf").iri()
+
+  protected val RDF_PROPERTY: String = (Namespace.Rdf + "Property").iri()
+  protected  val RDFS_DOMAIN: String = (Namespace.Rdfs + "domain").iri()
+  protected val RDFS_RANGE: String = (Namespace.Rdfs + "range").iri()
+
+  protected val SH_SHAPE: String = (Namespace.Shacl + "Shape").iri()
+  protected val SH_PROPERTY: String = (Namespace.Shacl + "property").iri()
+  protected val SH_PATH: String = (Namespace.Shacl + "path").iri()
+  protected val SH_MIN_COUNT: String = (Namespace.Shacl + "minCount").iri()
+  protected val SH_DATATYPE: String = (Namespace.Shacl + "datatype").iri()
+  protected val SH_NODE: String = (Namespace.Shacl + "node").iri()
+
+
+
   val jsonld: Model
 
   def findInstancesOf(classId: String): ArrayBuffer[Resource] = {

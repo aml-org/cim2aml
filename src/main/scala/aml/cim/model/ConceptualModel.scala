@@ -2,24 +2,10 @@ package aml.cim.model
 
 import amf.core.vocabulary.Namespace
 import aml.cim.CIM
+import aml.cim.model.entities.{FunctionalArea, RdfProperty, RdfsClass}
 import org.apache.jena.rdf.model.Model
 
-case class FunctionalArea(id: String, version: String, name: String, description: Option[String], classes: Seq[String], properties: Seq[String])
-case class RdfsClass(id: String, name: String, displayName: Option[String], description: Option[String], superClasses: Seq[String])
-case class RdfProperty(id: String, name: String, displayName: Option[String], description: Option[String], domains: Seq[String], ranges: Seq[String]) {
-  def isDataProperty: Boolean = ranges.contains(CIM.DATATYPE)
-}
-
 class ConceptualModel(val jsonld: Model) extends ModelHelper {
-
-  protected val RDFS_CLASS: String = (Namespace.Rdfs + "Class").iri()
-  protected  val RDFS_LABEL: String = (Namespace.Rdfs + "label").iri()
-  protected val RDFS_COMMENT: String = (Namespace.Rdfs + "comment").iri()
-  protected  val RDFS_SUBCLASS_OF: String = (Namespace.Rdfs + "subClassOf").iri()
-
-  protected val RDF_PROPERTY: String = (Namespace.Rdf + "Property").iri()
-  protected  val RDFS_DOMAIN: String = (Namespace.Rdfs + "domain").iri()
-  protected val RDFS_RANGE: String = (Namespace.Rdfs + "range").iri()
 
   /**
    * Find all the RDFS classes defined in the model
@@ -80,7 +66,8 @@ class ConceptualModel(val jsonld: Model) extends ModelHelper {
         name,
         description,
         classes,
-        properties
+        properties,
+        Nil
       )
     }
   }

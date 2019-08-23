@@ -1,9 +1,11 @@
-package aml.cim.model
+package aml.cim.generators
 
 import amf.core.model.DataType
 import amf.plugins.document.vocabularies.model.document.Vocabulary
 import amf.plugins.document.vocabularies.model.domain.{ClassTerm, DatatypePropertyTerm, ObjectPropertyTerm, PropertyTerm}
 import aml.cim.CIM
+import aml.cim.model.ConceptualModel
+import aml.cim.model.entities.FunctionalArea
 
 class VocabularyGenerator(conceptualModel: ConceptualModel, functionalArea: FunctionalArea) {
 
