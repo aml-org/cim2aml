@@ -28,6 +28,7 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
       val path = findRelatedResource(propertyId, SH_PATH).map(_.getURI).getOrElse(throw new Exception(s"Missing 'sh:path' for property constraint of shape for '$id'"))
       val name = path.split("/").last
       val mandatory = findProperty(propertyId, SH_MIN_COUNT).exists(_.getInt > 0)
+      val oneToOne = findProperty(propertyId, SH_MAX_COUNT).exists(_.getInt == 1)
 
       val datatypeRange = findRelatedResource(propertyId, SH_DATATYPE).map(_.getURI)
       val objectRange = findRelatedResource(propertyId, SH_NODE).map(_.getURI)
@@ -44,6 +45,7 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
         name,
         path,
         mandatory,
+        !oneToOne,
         objectRange,
         datatypeRange
       )

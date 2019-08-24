@@ -35,6 +35,9 @@ class DialectGenerator(conceptualModel: SchemasModel, functionalArea: Functional
         if (property.mandatory) {
           propertyMapping.withMinCount(1)
         }
+        if (property.allowMultiple) {
+          propertyMapping.withAllowMultiple(true)
+        }
         property.objectRange.foreach { objectRange =>
           propertyMapping.withObjectRange(Seq(nodeMappingId(objectRange)))
         }

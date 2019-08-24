@@ -44,6 +44,7 @@
       "@type": "@id"
     },
     "minCount": "sh:minCount",
+    "maxCount": "sh:maxCount",
     "datatype": {
       "@id": "sh:datatype",
       "@type": "@id"

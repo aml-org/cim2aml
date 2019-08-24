@@ -21,7 +21,8 @@
       "properties": [
         {
           "path": "icaoCode",
-          "datatype": "xsd:string"
+          "datatype": "xsd:string",
+          "maxCount": 1
         }
       ]
     }

@@ -24,6 +24,7 @@ trait ModelHelper {
   protected val SH_PROPERTY: String = (Namespace.Shacl + "property").iri()
   protected val SH_PATH: String = (Namespace.Shacl + "path").iri()
   protected val SH_MIN_COUNT: String = (Namespace.Shacl + "minCount").iri()
+  protected val SH_MAX_COUNT: String = (Namespace.Shacl + "maxCount").iri()
   protected val SH_DATATYPE: String = (Namespace.Shacl + "datatype").iri()
   protected val SH_NODE: String = (Namespace.Shacl + "node").iri()
 
