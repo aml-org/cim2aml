@@ -6,7 +6,7 @@ nodeMappings:
       geoCode:
         propertyTerm: PlaceFA.geoCode
         range: GeoCode
-        minimum: 1.0
+        mandatory: true
   GeoCode:
     classTerm: PlaceFA.GeoCode
     mapping:

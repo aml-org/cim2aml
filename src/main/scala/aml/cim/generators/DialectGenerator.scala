@@ -33,7 +33,7 @@ class DialectGenerator(conceptualModel: SchemasModel, functionalArea: Functional
       val propertyMappings = shape.properties.map { property =>
         val propertyMapping = PropertyMapping().withName(property.name).withNodePropertyMapping(property.path)
         if (property.mandatory) {
-          propertyMapping.withMinimum(1)
+          propertyMapping.withMinCount(1)
         }
         property.objectRange.foreach { objectRange =>
           propertyMapping.withObjectRange(Seq(nodeMappingId(objectRange)))
