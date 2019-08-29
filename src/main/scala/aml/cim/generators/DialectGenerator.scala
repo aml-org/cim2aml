@@ -1,19 +1,20 @@
 package aml.cim.generators
 
+import amf.core.vocabulary.Namespace
 import amf.plugins.document.vocabularies.model.document.Dialect
 import amf.plugins.document.vocabularies.model.domain.{DocumentMapping, DocumentsModel, External, NodeMapping, PropertyMapping, PublicNodeMapping}
 import aml.cim.CIM
 import aml.cim.model.SchemasModel
-import aml.cim.model.entities.FunctionalArea
+import aml.cim.model.entities.EntityGroup
 
-class DialectGenerator(conceptualModel: SchemasModel, functionalArea: FunctionalArea) {
+class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, version: String) {
 
   def generate(): Dialect = {
-    val dialect = Dialect().withId(functionalArea.id).withName(functionalArea.name).withVersion(functionalArea.version)
+    val dialect = Dialect().withId(entityGroup.id).withName(entityGroup.name).withVersion(version)
     val nodes = nodeMappings
 
     dialect.withDeclares(nodes)
-    dialect.withExternals(Seq(External().withAlias(functionalArea.name).withBase(CIM.NS.base)))
+    dialect.withExternals(Seq(External().withAlias("cim").withBase(CIM.NS.base)))
     val docModel = DocumentsModel()
     val publicNodeMappings = nodeMappings.map { nodeMapping =>
       PublicNodeMapping().withMappedNode(nodeMapping.id.split("/").last).withName(nodeMapping.name + "Schemas")
@@ -27,8 +28,8 @@ class DialectGenerator(conceptualModel: SchemasModel, functionalArea: Functional
   }
 
   lazy protected val nodeMappings: Seq[NodeMapping] = {
-    functionalArea.shapes.map { shapeId =>
-      val shape = conceptualModel.findShapeById(shapeId).getOrElse(throw new Exception(s"Cannot find shape '$shapeId' in functional area ${functionalArea.id}"))
+    entityGroup.shapes.map { shapeId =>
+      val shape = schemaModel.findShapeById(shapeId).getOrElse(throw new Exception(s"Cannot find shape '$shapeId' in Entity Group ${entityGroup.id}"))
       val nodeMapping = NodeMapping().withId(nodeMappingId(shape.id)).withName(shape.name).withNodeTypeMapping(shape.id)
       val propertyMappings = shape.properties.map { property =>
         val propertyMapping = PropertyMapping().withName(property.name).withNodePropertyMapping(property.path)
@@ -42,7 +43,11 @@ class DialectGenerator(conceptualModel: SchemasModel, functionalArea: Functional
           propertyMapping.withObjectRange(Seq(nodeMappingId(objectRange)))
         }
         property.scalarRange.foreach { scalarRange =>
-          propertyMapping.withLiteralRange(scalarRange)
+          if (scalarRange == CIM.cim("id")) {
+            propertyMapping.withLiteralRange((Namespace.Xsd + "string").iri())
+          } else {
+            propertyMapping.withLiteralRange(scalarRange)
+          }
         }
 
         propertyMapping
@@ -51,5 +56,5 @@ class DialectGenerator(conceptualModel: SchemasModel, functionalArea: Functional
     }
   }
 
-  def nodeMappingId(id: String): String = id.replace(CIM.NS.base, functionalArea.id + "/declarations/")
+  def nodeMappingId(id: String): String = id.replace(CIM.NS.base, entityGroup.id + "/declarations/")
 }

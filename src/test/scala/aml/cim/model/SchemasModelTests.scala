@@ -34,7 +34,7 @@ class SchemasModelTests extends FunSuite with Utils  {
   test("it should load a functional area with all the schemas") {
     val jsonld = loadExample("schemas")
     val schemasModel = new SchemasModel(jsonld)
-    val concepts = schemasModel.functionalAreas
+    val concepts = schemasModel.entityGroups
 
     assert(concepts.nonEmpty)
     assert(concepts.size == 1)

@@ -1,8 +1,7 @@
 package aml.cim.model
 
-import amf.core.vocabulary.Namespace
 import aml.cim.CIM
-import aml.cim.model.entities.{FunctionalArea, ShaclProperty, ShaclShape}
+import aml.cim.model.entities.{EntityGroup, ShaclProperty, ShaclShape}
 import org.apache.jena.rdf.model.Model
 
 class SchemasModel(val jsonld: Model) extends ModelHelper {
@@ -52,16 +51,15 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
     }
   }
 
-  lazy val functionalAreas: Seq[FunctionalArea] = {
-    findInstancesOf(CIM.FUNCTIONAL_AREA) map { fa =>
+  lazy val entityGroups: Seq[EntityGroup] = {
+    findInstancesOf(CIM.ENTITY_GROUP) map { fa =>
       val id = fa.getURI
       val name = findProperty(id, RDFS_LABEL).map(_.getString).getOrElse(id.split("/").last)
       val description = findProperty(id, RDFS_COMMENT).map(_.getString)
-      val version = findProperty(id, CIM.VERSION).map(_.getString).getOrElse(throw new Exception(s"Missing mandatory version for functional area $id"))
+      // val version = findProperty(id, CIM.VERSION).map(_.getString).getOrElse(throw new Exception(s"Missing mandatory version for functional area $id"))
       val shapes = findRelatedResources(id, CIM.SCHEMAS).map(_.getURI)
-      FunctionalArea(
+      EntityGroup(
         id,
-        version,
         name,
         description,
         Nil,

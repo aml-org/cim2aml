@@ -1,21 +1,21 @@
 #%Dialect 1.0
 nodeMappings:
   Place:
-    classTerm: PlaceFA.Place
+    classTerm: cim.Place
     mapping:
       geoCode:
-        propertyTerm: PlaceFA.geoCode
+        propertyTerm: cim.geoCode
         range: GeoCode
         mandatory: true
         allowMultiple: true
   GeoCode:
-    classTerm: PlaceFA.GeoCode
+    classTerm: cim.GeoCode
     mapping:
       icaoCode:
-        propertyTerm: PlaceFA.icaoCode
+        propertyTerm: cim.icaoCode
         range: string
 external:
-  PlaceFA: http://cim.org/model/
+  cim: http://cim.org/model/
 dialect: PlaceFA
 version: "1.0"
 documents:

@@ -1,7 +1,7 @@
 {
     "@context": "http://cim.org/context.jsonld",
     "@id": "PlaceFA",
-    "@type": "FunctionalArea",
+    "@type": "EntityGroup",
     "version": "1.0",
     "classConcepts": [
 	{

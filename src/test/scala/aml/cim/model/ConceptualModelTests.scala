@@ -38,7 +38,7 @@ class ConceptualModelTests extends FunSuite with Utils {
   test("it should load a cim functional area into the conceptual model") {
     val jsonld = loadExample("concepts")
     val conceptualModel = new ConceptualModel(jsonld)
-    val concepts = conceptualModel.functionalAreas
+    val concepts = conceptualModel.entityGroups
 
     assert(concepts.nonEmpty)
     assert(concepts.size == 1)

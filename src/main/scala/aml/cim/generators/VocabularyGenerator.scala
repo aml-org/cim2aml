@@ -5,19 +5,19 @@ import amf.plugins.document.vocabularies.model.document.Vocabulary
 import amf.plugins.document.vocabularies.model.domain.{ClassTerm, DatatypePropertyTerm, ObjectPropertyTerm, PropertyTerm}
 import aml.cim.CIM
 import aml.cim.model.ConceptualModel
-import aml.cim.model.entities.FunctionalArea
+import aml.cim.model.entities.EntityGroup
 
-class VocabularyGenerator(conceptualModel: ConceptualModel, functionalArea: FunctionalArea) {
+class VocabularyGenerator(conceptualModel: ConceptualModel, entityGroup: EntityGroup) {
 
   def generate(): Vocabulary = {
-    val vocabulary = Vocabulary().withId(functionalArea.id).withName(functionalArea.name).withBase(CIM.NS.base)
-    functionalArea.description.foreach(vocabulary.withUsage)
+    val vocabulary = Vocabulary().withId(entityGroup.id).withName(entityGroup.name).withBase(CIM.NS.base)
+    entityGroup.description.foreach(vocabulary.withUsage)
     vocabulary.withDeclares(classTerms ++ propertyTerms)
   }
 
   lazy protected val classTerms: Seq[ClassTerm] = {
-    functionalArea.classes map { classId =>
-      val rdfsClass = conceptualModel.findClassById(classId).getOrElse(throw new Exception(s"Cannot find class '$classId' for functional area '${functionalArea.id}'"))
+    entityGroup.classes map { classId =>
+      val rdfsClass = conceptualModel.findClassById(classId).getOrElse(throw new Exception(s"Cannot find class '$classId' for functional area '${entityGroup.id}'"))
       val classTerm = ClassTerm().withId(classId).withName(rdfsClass.name)
       rdfsClass.displayName.foreach(classTerm.withDisplayName)
       rdfsClass.description.foreach(classTerm.withDescription)
@@ -29,8 +29,8 @@ class VocabularyGenerator(conceptualModel: ConceptualModel, functionalArea: Func
   }
 
   lazy protected val propertyTerms: Seq[PropertyTerm] = {
-    functionalArea.properties.map { propertyId =>
-      val rdfProperty = conceptualModel.findPropertyById(propertyId).getOrElse(throw new Exception(s"Cannot find property '$propertyId' for functional area '${functionalArea.id}"))
+    entityGroup.properties.map { propertyId =>
+      val rdfProperty = conceptualModel.findPropertyById(propertyId).getOrElse(throw new Exception(s"Cannot find property '$propertyId' for functional area '${entityGroup.id}"))
       val propertyTerm: PropertyTerm = if (rdfProperty.isDataProperty) {
         DatatypePropertyTerm().withRange(DataType.Any)
       } else {

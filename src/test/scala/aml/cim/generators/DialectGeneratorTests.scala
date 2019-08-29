@@ -15,8 +15,8 @@ class DialectGeneratorTests extends AsyncFunSuite with Utils with PlatformSecret
     AMF.init() map { _ =>
       val jsonld = loadExample("schemas")
       val schemasModel = new SchemasModel(jsonld)
-      val functionalArea = schemasModel.functionalAreas.head
-      val dialect = new DialectGenerator(schemasModel, functionalArea).generate()
+      val entityGroup = schemasModel.entityGroups.head
+      val dialect = new DialectGenerator(schemasModel, entityGroup, "1.0").generate()
 
       val txt = new Aml10Renderer("application/yaml").generateString(Dialect(dialect)).get().trim
       val cs = platform.fs.syncFile("src/test/resources/schemas_example/schemas.yaml").read()
