@@ -1,0 +1,26 @@
+{
+  "@type": "EntityGroup",
+  "schemas": [
+    {
+      "@type": "Shape",
+      "name": "Device",
+      "@id": "Device",
+      "properties": [
+        {
+          "path": "Id",
+          "datatype": "cim:id",
+          "minCount": "1",
+          "maxCount": "1"
+        },
+        {
+          "node": "DeviceUserSession",
+          "path": "Device_DeviceUserSessions",
+          "minCount": "0"
+        }
+      ]
+    }
+  ],
+  "@id": "DeviceEntityGroup",
+  "version": "1.0",
+  "@context": "http://cim.org/context.jsonld"
+}

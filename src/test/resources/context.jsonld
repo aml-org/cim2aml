@@ -43,6 +43,7 @@
       "@id": "sh:node",
       "@type": "@id"
     },
+    "in": "sh:in",
     "minCount": "sh:minCount",
     "maxCount": "sh:maxCount",
     "datatype": {

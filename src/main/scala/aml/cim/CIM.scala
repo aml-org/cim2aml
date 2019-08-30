@@ -12,6 +12,8 @@ object CIM {
   val PROPERTIES: String = cim("properties")
   val SCHEMAS: String = cim("schemas")
 
+  val LOCATED: String = cim("filePath")
+  
   def cim(property: String): String = (NS + property).iri()
 
 }

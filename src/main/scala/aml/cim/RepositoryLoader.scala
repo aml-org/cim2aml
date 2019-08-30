@@ -6,13 +6,12 @@ import java.nio.file.{Files, Path, Paths}
 import amf.client.AMF
 import amf.client.model.document.{Dialect, Vocabulary}
 import amf.client.render.Aml10Renderer
-
-import scala.collection.JavaConverters._
 import amf.core.unsafe.PlatformSecrets
 import aml.cim.generators.{DialectGenerator, VocabularyGenerator}
 import aml.cim.model.{ConceptualModel, SchemasModel}
+import org.apache.jena.rdf.model.{Model, ModelFactory}
 
-import scala.concurrent.Await
+import scala.collection.JavaConverters._
 
 object RepositoryLoader extends PlatformSecrets {
 
@@ -24,9 +23,14 @@ object RepositoryLoader extends PlatformSecrets {
     conceptFiles.foreach { f =>
       processConceptFile(f, contextPath)
     }
+
+    var model = ModelFactory.createDefaultModel()
     schemaFiles.foreach { f =>
-      processSchemaFile(f, contextPath)
+      println(s"*** Loading schema file JSON ${f.toFile.getAbsolutePath}")
+      val jsonld = loadSchemaRDFModel(f.toFile.getAbsolutePath, contextPath)
+      model = model.union(jsonld)
     }
+    processSchemaFiles(model)
   }
 
   protected def processConceptFile(f: Path, contextPath: String) = {
@@ -42,17 +46,20 @@ object RepositoryLoader extends PlatformSecrets {
     writeFile(targetPath, generated)
   }
 
-  protected def processSchemaFile(f: Path, contextPath: String) = {
-    println(s"*** Loading schema file ${f.toFile.getAbsolutePath}")
-    val jsonld = JsonldLoader.fromFile(f.toFile.getAbsolutePath, contextPath)
-    val schemaModel = new SchemasModel(jsonld)
-    val entityGroup = schemaModel.entityGroups.head
-    val dialect = new DialectGenerator(schemaModel, entityGroup, "1.0").generate()
+  protected def processSchemaFiles(model: Model) = {
+    val schemaModel = new SchemasModel(model)
+    schemaModel.linkEntityGroups
+    schemaModel.entityGroups.foreach { entityGroup =>
+      val location = entityGroup.location.getOrElse(throw new Exception("Cannot generate AML dialect without location for the CIM schema file"))
+      println(s"*** Loading schema file $location")
 
-    val generated = new Aml10Renderer("application/yaml").generateString(new Dialect(dialect)).get().trim
-    val targetPath = f.toFile.getAbsolutePath.replace("schema.jsonld", "schema.yaml")
+      val dialect = new DialectGenerator(schemaModel, entityGroup, "1.0").generate()
 
-    writeFile(targetPath, generated)
+      val generated = new Aml10Renderer("application/yaml").generateString(new Dialect(dialect)).get().trim
+      val targetPath = location.replace("schema.jsonld", "schema.yaml")
+
+      writeFile(targetPath, generated)
+    }
   }
 
   protected def writeFile(filename: String, text: String) = {
@@ -61,6 +68,19 @@ object RepositoryLoader extends PlatformSecrets {
     bw.write(text)
     bw.close()
   }
+
+  protected def loadSchemaRDFModel(path: String, contextPath: String): Model = {
+    val jsonld = JsonldLoader.fromFile(path, contextPath)
+    new SchemasModel(jsonld).entityGroupId map { entityGroupId =>
+      jsonld.add(
+        jsonld.createResource(entityGroupId),
+        jsonld.createProperty(CIM.LOCATED),
+        jsonld.createLiteral(path)
+      )
+    }
+    jsonld
+  }
+
 
   def main(args: Array[String]) = {
     AMF.init().get()

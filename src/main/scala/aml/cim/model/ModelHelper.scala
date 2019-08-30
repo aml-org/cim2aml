@@ -27,6 +27,7 @@ trait ModelHelper {
   protected val SH_MAX_COUNT: String = (Namespace.Shacl + "maxCount").iri()
   protected val SH_DATATYPE: String = (Namespace.Shacl + "datatype").iri()
   protected val SH_NODE: String = (Namespace.Shacl + "node").iri()
+  protected val SH_IN: String = (Namespace.Shacl + "in").iri()
 
 
 
@@ -74,6 +75,15 @@ trait ModelHelper {
     acc
   }
 
+  def findSubjectOf(property: String, id: String): ArrayBuffer[Resource] = {
+    val it: ResIterator = jsonld.listSubjectsWithProperty(
+      jsonld.createProperty(property),
+      subject(id)
+    )
+
+    iterateResources(it,(n: RDFNode) => n.asResource())
+  }
+
   def subject(id: String): Resource = {
     if (id.startsWith("http")) {
       jsonld.createResource(id)
@@ -82,4 +92,10 @@ trait ModelHelper {
     }
   }
 
+}
+
+class ModelOps(override val jsonld: Model) extends ModelHelper
+
+object ModelOps {
+  def apply(jsonld: Model) = new ModelOps(jsonld)
 }

@@ -1,0 +1,49 @@
+{
+  "@type": "EntityGroup",
+  "schemas": [{
+    "@type": "Shape",
+    "name": "DeviceUserSession",
+    "@id": "DeviceUserSession",
+    "properties": [{
+      "path": "CreatedDate",
+      "datatype": "xsd:dateTime",
+      "minCount": "1",
+      "maxCount": "1"
+    },{
+      "path": "Name",
+      "datatype": "xsd:string",
+      "minCount": "1",
+      "maxCount": "1"
+    },{
+      "path": "Id",
+      "datatype": "cim:id",
+      "minCount": "1",
+      "maxCount": "1"
+    },{
+      "path": "SystemModstamp",
+      "datatype": "xsd:dateTime",
+      "minCount": "1",
+      "maxCount": "1"
+    },{
+      "path": "ExternalRecordId",
+      "datatype": "xsd:string",
+      "minCount": "0",
+      "maxCount": "1"
+    },{
+      "node": "Device",
+      "path": "DeviceId",
+      "minCount": "1",
+      "maxCount": "1"
+    },{
+      "path": "LastModifiedDate",
+      "datatype": "xsd:dateTime",
+      "minCount": "1",
+      "maxCount": "1"
+    }
+    ]
+  }
+  ],
+  "@id": "Product_AttributeEntityGroup",
+  "version": "1.0",
+  "@context": "http://cim.org/context.jsonld"
+}

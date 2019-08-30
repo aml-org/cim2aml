@@ -1,0 +1,45 @@
+#%Dialect 1.0
+uses:
+  device_eg: ../../assets/schema.jsonld
+nodeMappings:
+  DeviceUserSession:
+    classTerm: cim.DeviceUserSession
+    mapping:
+      SystemModstamp:
+        propertyTerm: cim.SystemModstamp
+        range: dateTime
+        mandatory: true
+      DeviceId:
+        propertyTerm: cim.DeviceId
+        range: device_eg.Device
+        mandatory: true
+      CreatedDate:
+        propertyTerm: cim.CreatedDate
+        range: dateTime
+        mandatory: true
+      ExternalRecordId:
+        propertyTerm: cim.ExternalRecordId
+        range: string
+      LastModifiedDate:
+        propertyTerm: cim.LastModifiedDate
+        range: dateTime
+        mandatory: true
+      Id:
+        propertyTerm: cim.Id
+        range: string
+        mandatory: true
+      Name:
+        propertyTerm: cim.Name
+        range: string
+        mandatory: true
+external:
+  cim: http://cim.org/model/
+dialect: Product_AttributeEntityGroup
+version: "1.0"
+documents:
+  root:
+    declares:
+      DeviceUserSessionSchemas: DeviceUserSession
+  fragments:
+    encodes:
+      DeviceUserSession: DeviceUserSession
