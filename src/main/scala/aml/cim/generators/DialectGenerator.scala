@@ -93,6 +93,8 @@ class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, vers
         property.scalarRange.foreach { scalarRange =>
           if (scalarRange == CIM.cim("id")) {
             propertyMapping.withLiteralRange((Namespace.Xsd + "string").iri())
+          } else if (scalarRange == (Namespace.Xsd + "decimal").iri()) {
+            propertyMapping.withLiteralRange((Namespace.Xsd + "integer").iri())
           } else {
             propertyMapping.withLiteralRange(scalarRange)
           }
