@@ -107,6 +107,6 @@ class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, vers
   def nodeMappingId(entityGroup: EntityGroup, id: String): String = id.replace(CIM.NS.base, entityGroup.id + "/declarations/")
 
   protected def relativePaths(from: String, to: String): String = {
-    Paths.get(from).relativize(Paths.get(to)).toString
+    Paths.get(from).getParent.relativize(Paths.get(to)).toString
   }
 }
