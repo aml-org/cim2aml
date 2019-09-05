@@ -100,13 +100,18 @@ class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, vers
           }
         }
 
+        if (property.enum.nonEmpty) propertyMapping.withEnum(property.enum)
+
         propertyMapping
       }
       nodeMapping.withPropertiesMapping(propertyMappings)
     }
   }
 
-  def nodeMappingId(entityGroup: EntityGroup, id: String): String = id.replace(CIM.NS.base, entityGroup.id + "/declarations/")
+  def nodeMappingId(entityGroup: EntityGroup, id: String): String = {
+    val after = id.replace(CIM.NS.base, entityGroup.id + "/declarations/")
+    after
+  }
 
   protected def relativePaths(from: String, to: String): String = {
     Paths.get(from).getParent.relativize(Paths.get(to)).toString

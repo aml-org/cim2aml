@@ -55,6 +55,15 @@ trait ModelHelper {
     }
   }
 
+  def findRelatedProperties(id: String, property: String): mutable.ArrayBuffer[Literal] = {
+    val it: ExtendedIterator[RDFNode] = jsonld.listObjectsOfProperty(
+      subject(id),
+      jsonld.createProperty(property)
+    )
+
+    iterateResources(it,(n: RDFNode) => n.asLiteral())
+  }
+
   def findRelatedResources(id: String, property: String): mutable.ArrayBuffer[Resource] = {
     val it: ExtendedIterator[RDFNode] = jsonld.listObjectsOfProperty(
       subject(id),

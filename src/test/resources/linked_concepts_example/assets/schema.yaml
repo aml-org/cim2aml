@@ -1,18 +1,18 @@
 #%Dialect 1.0
 uses:
-  product_attribute_eg: ../../product_attribute/schema.yaml
+  product_attribute_eg: ../product_attribute/schema.yaml
 nodeMappings:
   Device:
     classTerm: cim.Device
     mapping:
-      Id:
-        propertyTerm: cim.Id
-        range: string
-        mandatory: true
       Device_DeviceUserSessions:
         propertyTerm: cim.Device_DeviceUserSessions
         range: product_attribute_eg.DeviceUserSession
         allowMultiple: true
+      Id:
+        propertyTerm: cim.Id
+        range: string
+        mandatory: true
 external:
   cim: http://cim.org/model/
 dialect: DeviceEntityGroup

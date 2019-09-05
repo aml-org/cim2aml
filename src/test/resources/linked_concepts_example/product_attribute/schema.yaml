@@ -1,37 +1,37 @@
 #%Dialect 1.0
 uses:
-  device_eg: ../../assets/schema.yaml
+  device_eg: ../assets/schema.yaml
 nodeMappings:
   DeviceUserSession:
     classTerm: cim.DeviceUserSession
     mapping:
-      CreatedDate:
-        propertyTerm: cim.CreatedDate
+      LastModifiedDate:
+        propertyTerm: cim.LastModifiedDate
         range: dateTime
         mandatory: true
-      Id:
-        propertyTerm: cim.Id
+      ExternalRecordId:
+        propertyTerm: cim.ExternalRecordId
         range: string
+      DeviceId:
+        propertyTerm: cim.DeviceId
+        range: device_eg.Device
         mandatory: true
       Name:
         propertyTerm: cim.Name
         range: string
         mandatory: true
-      DeviceId:
-        propertyTerm: cim.DeviceId
-        range: device_eg.Device
+      Id:
+        propertyTerm: cim.Id
+        range: string
         mandatory: true
-      LastModifiedDate:
-        propertyTerm: cim.LastModifiedDate
+      CreatedDate:
+        propertyTerm: cim.CreatedDate
         range: dateTime
         mandatory: true
       SystemModstamp:
         propertyTerm: cim.SystemModstamp
         range: dateTime
         mandatory: true
-      ExternalRecordId:
-        propertyTerm: cim.ExternalRecordId
-        range: string
 external:
   cim: http://cim.org/model/
 dialect: Product_AttributeEntityGroup

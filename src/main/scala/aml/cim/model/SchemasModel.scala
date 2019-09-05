@@ -29,6 +29,7 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
       val name = path.split("/").last
       val mandatory = findProperty(propertyId, SH_MIN_COUNT).exists(_.getInt > 0)
       val oneToOne = findProperty(propertyId, SH_MAX_COUNT).exists(_.getInt == 1)
+      val enum = findRelatedProperties(propertyId, SH_IN).map(_.getString)
 
       var datatypeRange = findRelatedResource(propertyId, SH_DATATYPE).map(_.getURI)
       val objectRange = findRelatedResource(propertyId, SH_NODE).map(_.getURI)
@@ -51,7 +52,8 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
         mandatory,
         !oneToOne,
         objectRange,
-        datatypeRange
+        datatypeRange,
+        enum
       )
     }
   }
