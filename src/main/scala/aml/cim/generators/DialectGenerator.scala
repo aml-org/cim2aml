@@ -4,6 +4,7 @@ import java.nio.file.Paths
 
 import amf.core.annotations.Aliases
 import amf.core.model.document.BaseUnit
+import amf.core.model.domain.{DomainElement, Linkable}
 import amf.core.vocabulary.Namespace
 import amf.plugins.document.vocabularies.model.document.{Dialect, DialectLibrary}
 import amf.plugins.document.vocabularies.model.domain._
@@ -15,14 +16,15 @@ import scala.collection.mutable
 
 class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, version: String) {
 
-
   def generate(): Dialect = {
     val dialect = Dialect().withId(entityGroup.id).withName(entityGroup.name).withVersion(version)
-    computeDependencies(dialect, entityGroup)
-
     val nodes = nodeMappings
 
+    val aliases = computeDependencies(dialect, entityGroup)
     dialect.withDeclares(nodes)
+
+    computeExtensions(aliases, dialect)
+
     dialect.withExternals(Seq(External().withAlias("cim").withBase(CIM.NS.base)))
     val docModel = DocumentsModel()
     val publicNodeMappings = nodeMappings.map { nodeMapping =>
@@ -53,19 +55,25 @@ class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, vers
       (entityGroup, DialectLibrary().withId(entityGroup.id).withLocation(path).withDeclares(nodeMappings))
     }.toSeq
 
-    computeAliases(dialect, deps)
     dialect.withReferences(deps.map(_._2))
+
+    computeAliases(dialect, deps)
   }
 
   protected def computeAliases(dialect: Dialect, deps: Seq[(EntityGroup, BaseUnit)]) = {
+    var acc = mutable.Map[String,String]()
+
     if (deps.nonEmpty) {
       val aliasesValues = deps.map { case (eg: EntityGroup, dep: DialectLibrary) =>
         val alias = eg.name.split(" ").map(_.toLowerCase).mkString("_").replace("entitygroup", "_eg")
+        acc += (dep.id -> alias)
         (alias, (dep.id, dep.location().get))
       }.toSet
       dialect.annotations += Aliases(aliasesValues)
       dialect.withReferences(deps.map(_._2))
     }
+
+    acc
   }
 
 
@@ -73,6 +81,20 @@ class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, vers
     entityGroup.shapes.map { shapeId =>
       val shape = schemaModel.findShapeById(shapeId).getOrElse(throw new Exception(s"Cannot find shape '$shapeId' in Entity Group ${entityGroup.id}"))
       val nodeMapping = NodeMapping().withId(nodeMappingId(entityGroup, shape.id)).withName(shape.name).withNodeTypeMapping(shape.id)
+      shape.baseSchema.headOption match {
+        case Some(baseSchema) =>
+          val alias = entityGroup.dependencies.find(_.shape.id == baseSchema) match {
+            // external reference
+            case Some(dep) =>
+              nodeMappingId(dep.entityGroup, baseSchema)
+            // local reference
+            case _         =>
+              nodeMappingId(entityGroup, baseSchema)
+          }
+          nodeMapping.withExtends(Seq(NodeMapping().withId(baseSchema).link(alias).asInstanceOf[NodeMapping]))
+        case None => // ignore
+      }
+
       val propertyMappings = shape.properties.map { property =>
         val propertyMapping = PropertyMapping().withName(property.name).withNodePropertyMapping(property.path)
         if (property.mandatory) {
@@ -108,12 +130,33 @@ class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, vers
     }
   }
 
-  def nodeMappingId(entityGroup: EntityGroup, id: String): String = {
+  protected def nodeMappingId(entityGroup: EntityGroup, id: String): String = {
     val after = id.replace(CIM.NS.base, entityGroup.id + "/declarations/")
     after
   }
 
   protected def relativePaths(from: String, to: String): String = {
     Paths.get(from).getParent.relativize(Paths.get(to)).toString
+  }
+
+  protected def computeExtensions(aliases: mutable.Map[String, String], dialect: Dialect) = {
+    dialect.declares.foreach { case nodeMapping: NodeMapping =>
+      if (nodeMapping.extend.nonEmpty) {
+        val b = nodeMapping.extend.head
+        val base = b.asInstanceOf[Linkable]
+        val label = base.linkLabel.value()
+        val foundAlias = aliases.find { case (id, alias) =>
+          label.contains(id)
+        }
+        foundAlias match {
+          case Some((_, alias)) =>
+            val finalLabel = alias + "." + label.split("/declarations/").last
+            nodeMapping.withExtends(Seq(base.withLinkLabel(finalLabel).asInstanceOf[DomainElement]))
+          case _          =>
+            val finalLabel = label.split("/declarations/").last
+            nodeMapping.withExtends(Seq(base.withLinkLabel(finalLabel).asInstanceOf[DomainElement]))
+        }
+      }
+    }
   }
 }

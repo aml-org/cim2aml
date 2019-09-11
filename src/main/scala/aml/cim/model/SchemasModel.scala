@@ -3,7 +3,7 @@ package aml.cim.model
 import amf.core.vocabulary.Namespace
 import aml.cim.CIM
 import aml.cim.model.entities.{EntityGroup, ShaclProperty, ShaclShape, ShapeDependency}
-import org.apache.jena.rdf.model.Model
+import org.apache.jena.rdf.model.{Model, RDFList, Resource}
 
 class SchemasModel(val jsonld: Model) extends ModelHelper {
 
@@ -12,13 +12,37 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
       val id = shaclShape.getURI
       val name = id.split("/").last
 
-      val properties = shapeProperties(id)
+      shapeExtensions(id) match {
+        case Some((baseShape, properties)) =>
+          ShaclShape(
+            id,
+            name,
+            properties,
+            Seq(baseShape)
+          )
+        case None                        =>
+          val properties = shapeProperties(id)
+          ShaclShape(
+            id,
+            name,
+            properties,
+            Nil
+          )
+      }
+    }
+  }
 
-      ShaclShape(
-        id,
-        name,
-        properties
-      )
+  def shapeExtensions(id: String): Option[(String, Seq[ShaclProperty])] = {
+    val composed = findRelatedResources(id, SH_AND)
+    if (composed.nonEmpty) {
+      composed.map { resource: Resource =>
+        val list = resource.as(classOf[RDFList])
+        val baseShape = list.get(0).asResource().getURI
+        val properties = shapeProperties(list.get(1).asResource().getId.toString)
+        (baseShape, properties)
+      } headOption
+    } else {
+      None
     }
   }
 

@@ -28,6 +28,7 @@ trait ModelHelper {
   protected val SH_DATATYPE: String = (Namespace.Shacl + "datatype").iri()
   protected val SH_NODE: String = (Namespace.Shacl + "node").iri()
   protected val SH_IN: String = (Namespace.Shacl + "in").iri()
+  protected val SH_AND: String = (Namespace.Shacl + "and").iri()
 
 
 

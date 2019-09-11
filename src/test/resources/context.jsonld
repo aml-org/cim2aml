@@ -43,6 +43,10 @@
       "@id": "sh:node",
       "@type": "@id"
     },
+    "and": {
+      "@id": "sh:and",
+      "@container": "@list"
+    },
     "in": "sh:in",
     "minCount": "sh:minCount",
     "maxCount": "sh:maxCount",
