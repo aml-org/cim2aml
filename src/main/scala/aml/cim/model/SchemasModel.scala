@@ -115,7 +115,8 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
               val rangeShape = shapes.find(_.id == range).getOrElse(throw new Exception(s"Cannot find entity by ID ${range}"))
               entityGroup.dependencies += ShapeDependency(rangeEntityGroup, rangeShape) // = entityGroup.dependencies ++ Seq(ShapeDependency(rangeEntityGroup, rangeShape))
             case _ =>
-              throw new Exception(s"Cannot find entity group for shape ID ${range}")
+              println(s"Cannot find entity group for shape ID ${range} in entity group ${entityGroup.name}")
+              // throw new Exception(s"Cannot find entity group for shape ID ${range}")
           }
         }
       }

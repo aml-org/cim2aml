@@ -38,7 +38,7 @@ class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, vers
     dialect.withDocuments(docModel)
   }
 
-  protected def computeDependencies(dialect: Dialect, sourceEntityGroup: EntityGroup) = {
+  protected def computeDependencies(dialect: Dialect, sourceEntityGroup: EntityGroup): mutable.Map[String, String] = {
     val dependentEntityGroups: mutable.Seq[ShapeDependency] = sourceEntityGroup.dependencies
     val acc = mutable.Map[String,Seq[ShaclShape]]()
     val entityGroupsMap = mutable.Map[String, EntityGroup]()
@@ -60,7 +60,7 @@ class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, vers
     computeAliases(dialect, deps)
   }
 
-  protected def computeAliases(dialect: Dialect, deps: Seq[(EntityGroup, BaseUnit)]) = {
+  protected def computeAliases(dialect: Dialect, deps: Seq[(EntityGroup, BaseUnit)]): mutable.Map[String, String] = {
     var acc = mutable.Map[String,String]()
 
     if (deps.nonEmpty) {
@@ -114,7 +114,7 @@ class DialectGenerator(schemaModel: SchemasModel, entityGroup: EntityGroup, vers
         }
         property.scalarRange.foreach { scalarRange =>
           if (scalarRange == CIM.cim("id")) {
-            propertyMapping.withLiteralRange((Namespace.Xsd + "string").iri())
+            propertyMapping.withLiteralRange((Namespace.Shapes + "guid").iri())
           } else if (scalarRange == (Namespace.Xsd + "decimal").iri()) {
             propertyMapping.withLiteralRange((Namespace.Xsd + "integer").iri())
           } else {

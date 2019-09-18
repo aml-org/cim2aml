@@ -33,7 +33,7 @@ nodeMappings:
         range: string
         mandatory: true
 external:
-  cim: http://cim.org/model/
+  cim: http://cloudinformationmodel.org/model/
 dialect: Product_AttributeEntityGroup
 version: "1.0"
 documents:

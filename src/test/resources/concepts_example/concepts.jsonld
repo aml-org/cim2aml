@@ -1,5 +1,5 @@
 {
-    "@context": "http://cim.org/context.jsonld",
+    "@context": "http://cloudinformationmodel.org/context.jsonld",
     "@id": "PlaceFA",
     "@type": "EntityGroup",
     "version": "1.0",

@@ -45,5 +45,5 @@
   ],
   "@id": "Product_AttributeEntityGroup",
   "version": "1.0",
-  "@context": "http://cim.org/context.jsonld"
+  "@context": "http://cloudinformationmodel.org/context.jsonld"
 }

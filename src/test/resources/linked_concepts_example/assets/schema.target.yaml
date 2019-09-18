@@ -14,7 +14,7 @@ nodeMappings:
         range: product_attribute_eg.DeviceUserSession
         allowMultiple: true
 external:
-  cim: http://cim.org/model/
+  cim: http://cloudinformationmodel.org/model/
 dialect: DeviceEntityGroup
 version: "1.0"
 documents:

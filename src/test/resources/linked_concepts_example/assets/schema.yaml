@@ -5,16 +5,16 @@ nodeMappings:
   Device:
     classTerm: cim.Device
     mapping:
+      Id:
+        propertyTerm: cim.Id
+        range: guid
+        mandatory: true
       Device_DeviceUserSessions:
         propertyTerm: cim.Device_DeviceUserSessions
         range: product_attribute_eg.DeviceUserSession
         allowMultiple: true
-      Id:
-        propertyTerm: cim.Id
-        range: string
-        mandatory: true
 external:
-  cim: http://cim.org/model/
+  cim: http://cloudinformationmodel.org/model/
 dialect: DeviceEntityGroup
 version: "1.0"
 documents:

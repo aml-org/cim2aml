@@ -1,7 +1,15 @@
 #%Vocabulary 1.0
-base: http://cim.org/model/
+base: http://cloudinformationmodel.org/model/
 vocabulary: PlaceFA
 classTerms:
+  Location:
+    displayName: Location
+    description: A Location description
+    extends: Place
+  Address:
+    displayName: Address
+    description: An Adress description
+    extends: Place
   Place:
     displayName: Place
     description: A Place description
@@ -11,14 +19,6 @@ classTerms:
   GeoCode:
     displayName: Geo-code
     description: A Geo-code description
-  Location:
-    displayName: Location
-    description: A Location description
-    extends: Place
-  Address:
-    displayName: Address
-    description: An Adress description
-    extends: Place
 propertyTerms:
   icaoCode:
     displayName: ICAO Code

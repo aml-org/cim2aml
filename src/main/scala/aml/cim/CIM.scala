@@ -4,7 +4,7 @@ import amf.core.vocabulary.Namespace
 
 object CIM {
 
-  val NS: Namespace = Namespace("http://cim.org/model/")
+  val NS: Namespace = Namespace("http://cloudinformationmodel.org/model/")
   val DATATYPE: String = cim("DataType")
   val ENTITY_GROUP: String = cim("EntityGroup")
   val VERSION: String = cim("version")
