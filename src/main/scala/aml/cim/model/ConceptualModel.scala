@@ -2,7 +2,7 @@ package aml.cim.model
 
 import amf.core.vocabulary.Namespace
 import aml.cim.CIM
-import aml.cim.model.entities.{EntityGroup, RdfProperty, RdfsClass}
+import aml.cim.model.entities.{ConceptualGroup, RdfProperty, RdfsClass}
 import org.apache.jena.rdf.model.Model
 
 class ConceptualModel(val jsonld: Model) extends ModelHelper {
@@ -52,23 +52,41 @@ class ConceptualModel(val jsonld: Model) extends ModelHelper {
   }
 
 
-  lazy val entityGroups: Seq[EntityGroup] = {
-    findInstancesOf(CIM.ENTITY_GROUP) map { fa =>
+  lazy val conceptualGroups: Seq[ConceptualGroup] = {
+    val entityGroups = findInstancesOf(CIM.ENTITY_GROUP) map { fa =>
       val id = fa.getURI
       val name = findProperty(id, RDFS_LABEL).map(_.getString).getOrElse(id.split("/").last)
       val description = findProperty(id, RDFS_COMMENT).map(_.getString)
       // val version = findProperty(id, CIM.VERSION).map(_.getString).getOrElse(throw new Exception(s"Missing mandatory version for functional area $id"))
       val classes = findRelatedResources(id, CIM.CLASSES).map(_.getURI)
       val properties = findRelatedResources(id, CIM.PROPERTIES).map(_.getURI)
-      EntityGroup(
+      ConceptualGroup(
+        id = id,
+        name = name,
+        description = description,
+        classes = classes,
+        properties = properties,
+        Nil
+      )
+    }
+
+    val attributeGroups = findInstancesOf(CIM.ATTRIBUTE_GROUP) map { fa =>
+      val id = fa.getURI
+      val name = findProperty(id, RDFS_LABEL).map(_.getString).getOrElse(id.split("/").last)
+      val description = findProperty(id, RDFS_COMMENT).map(_.getString)
+      // val version = findProperty(id, CIM.VERSION).map(_.getString).getOrElse(throw new Exception(s"Missing mandatory version for functional area $id"))
+      val properties = findRelatedResources(id, CIM.PROPERTIES).map(_.getURI)
+      ConceptualGroup(
         id,
         name,
         description,
-        classes,
+        Nil,
         properties,
         Nil
       )
     }
+
+    entityGroups ++ attributeGroups
   }
 
   def findClassById(id: String): Option[RdfsClass] = rdfsClasses.find(_.id == id)

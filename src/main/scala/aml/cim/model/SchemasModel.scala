@@ -2,10 +2,10 @@ package aml.cim.model
 
 import amf.core.vocabulary.Namespace
 import aml.cim.CIM
-import aml.cim.model.entities.{EntityGroup, ShaclProperty, ShaclShape, ShapeDependency}
+import aml.cim.model.entities.{ConceptualGroup, PathDependency, ShaclProperty, ShaclShape, ShapeDependency}
 import org.apache.jena.rdf.model.{Model, RDFList, Resource}
 
-class SchemasModel(val jsonld: Model) extends ModelHelper {
+class SchemasModel(val jsonld: Model, ontology: Seq[ConceptualGroup]) extends ModelHelper {
 
   lazy val shapes: Seq[ShaclShape] = {
     findInstancesOf(SH_SHAPE) map { shaclShape =>
@@ -82,7 +82,7 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
     }
   }
 
-  lazy val entityGroups: Seq[EntityGroup] = {
+  lazy val entityGroups: Seq[ConceptualGroup] = {
     findInstancesOf(CIM.ENTITY_GROUP) map { fa =>
       val id = fa.getURI
       val name = findProperty(id, RDFS_LABEL).map(_.getString).getOrElse(id.split("/").last)
@@ -90,7 +90,7 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
       val location = findProperty(id, CIM.LOCATED).map(_.getString)
       // val version = findProperty(id, CIM.VERSION).map(_.getString).getOrElse(throw new Exception(s"Missing mandatory version for functional area $id"))
       val shapes = findRelatedResources(id, CIM.SCHEMAS).map(_.getURI)
-      EntityGroup(
+      ConceptualGroup(
         id,
         name,
         description,
@@ -102,11 +102,14 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
     }
   }
 
+  lazy val attributeGroups: Seq[ConceptualGroup] = ontology.filter(cg => cg.properties.nonEmpty)
+
   def linkEntityGroups = {
     entityGroups.foreach { entityGroup =>
       entityGroup.shapes.foreach { shapeId =>
         val shape = shapes.find(_.id == shapeId).getOrElse(throw new Exception(s"Cannot find shape with ID ${shapeId} for entity group ${entityGroup.id}"))
-        val objectProperties = shape.properties.filter(_.objectRange.nonEmpty)
+        // check object properties
+        val objectProperties = shape.properties.toList.filter(_.objectRange.nonEmpty)
         objectProperties.foreach { objectProperty =>
           val range = objectProperty.objectRange.get
           findEntityGroupForShape(range) match {
@@ -119,6 +122,18 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
               // throw new Exception(s"Cannot find entity group for shape ID ${range}")
           }
         }
+
+        shape.properties.foreach { property =>
+          val path = property.path
+          findAttributeGroupForShape(path) match {
+            case Some(rangeEntityGroup) if rangeEntityGroup.id == entityGroup.id => // ignore
+            case Some(rangeEntityGroup) if rangeEntityGroup.id != entityGroup.id => // dependency
+              entityGroup.pathDependencies += PathDependency(rangeEntityGroup, path) // = entityGroup.dependencies ++ Seq(ShapeDependency(rangeEntityGroup, rangeShape))
+            case _ =>
+              println(s"Cannot find entity group for property ID ${path} in entity group ${entityGroup.name}")
+            // throw new Exception(s"Cannot find entity group for shape ID ${range}")
+          }
+        }
       }
     }
   }
@@ -126,6 +141,12 @@ class SchemasModel(val jsonld: Model) extends ModelHelper {
   def findEntityGroupForShape(id: String) = {
     entityGroups.find { entityGroup =>
       entityGroup.shapes.contains(id)
+    }
+  }
+
+  def findAttributeGroupForShape(id: String) = {
+    attributeGroups.find { attributeGroup =>
+      attributeGroup.properties.contains(id)
     }
   }
 

@@ -8,6 +8,7 @@ import amf.client.model.document.{Dialect, Vocabulary}
 import amf.client.render.Aml10Renderer
 import amf.core.unsafe.PlatformSecrets
 import aml.cim.generators.{DialectGenerator, VocabularyGenerator}
+import aml.cim.model.entities.ConceptualGroup
 import aml.cim.model.{ConceptualModel, SchemasModel}
 import org.apache.jena.rdf.model.{Model, ModelFactory}
 
@@ -20,40 +21,44 @@ object RepositoryLoader extends PlatformSecrets {
     val conceptFiles = files.filter(f => f.endsWith("concepts.jsonld"))
     files = Files.walk(Paths.get(path)).iterator().asScala
     val schemaFiles = files.filter(f => f.endsWith("schema.jsonld"))
-    conceptFiles.foreach { f =>
+    val ontology = conceptFiles.toList.map { f =>
+      println(s"*** Loading vocabulary file JSON ${f.toFile.getAbsolutePath}")
       processConceptFile(f, contextPath)
     }
 
     var model = ModelFactory.createDefaultModel()
     schemaFiles.foreach { f =>
       println(s"*** Loading schema file JSON ${f.toFile.getAbsolutePath}")
-      val jsonld = loadSchemaRDFModel(f.toFile.getAbsolutePath, contextPath)
+      val jsonld = loadSchemaRDFModel(f.toFile.getAbsolutePath, contextPath,ontology)
       model = model.union(jsonld)
     }
-    processSchemaFiles(model)
+    processSchemaFiles(model, ontology)
   }
 
   protected def processConceptFile(f: Path, contextPath: String) = {
     println(s"*** Loading concept file ${f.toFile.getAbsolutePath}")
-    val jsonld = JsonldLoader.fromFile(f.toFile.getAbsolutePath, contextPath)
+    val fullPath = f.toFile.getAbsolutePath
+    val jsonld = JsonldLoader.fromFile(fullPath, contextPath)
     val conceptualModel = new ConceptualModel(jsonld)
-    val entityGroup = conceptualModel.entityGroups.head
+    val entityGroup = conceptualModel.conceptualGroups.head.copy(location = Some(fullPath))
     val vocabulary = new VocabularyGenerator(conceptualModel, entityGroup).generate()
 
     val generated = new Aml10Renderer("application/yaml").generateString(new Vocabulary(vocabulary)).get().trim
     val targetPath = f.toFile.getAbsolutePath.replace("concepts.jsonld", "concepts.yaml")
 
     writeFile(targetPath, generated)
+
+    entityGroup
   }
 
-  protected def processSchemaFiles(model: Model) = {
-    val schemaModel = new SchemasModel(model)
+  protected def processSchemaFiles(unionModel: Model, ontology: Seq[ConceptualGroup]) = {
+    val schemaModel = new SchemasModel(unionModel, ontology)
     schemaModel.linkEntityGroups
     schemaModel.entityGroups.foreach { entityGroup =>
       val location = entityGroup.location.getOrElse(throw new Exception("Cannot generate AML dialect without location for the CIM schema file"))
       println(s"*** Loading schema file $location")
 
-      val dialect = new DialectGenerator(schemaModel, entityGroup, "1.0").generate()
+      val dialect = new DialectGenerator(schemaModel, entityGroup, "1.0", ontology).generate()
 
       val generated = new Aml10Renderer("application/yaml").generateString(new Dialect(dialect)).get().trim
       val targetPath = location.replace("schema.jsonld", "schema.yaml")
@@ -69,9 +74,9 @@ object RepositoryLoader extends PlatformSecrets {
     bw.close()
   }
 
-  protected def loadSchemaRDFModel(path: String, contextPath: String): Model = {
+  protected def loadSchemaRDFModel(path: String, contextPath: String, ontology: Seq[ConceptualGroup]): Model = {
     val jsonld = JsonldLoader.fromFile(path, contextPath)
-    new SchemasModel(jsonld).entityGroupId map { entityGroupId =>
+    new SchemasModel(jsonld, ontology).entityGroupId map { entityGroupId =>
       jsonld.add(
         jsonld.createResource(entityGroupId),
         jsonld.createProperty(CIM.LOCATED),

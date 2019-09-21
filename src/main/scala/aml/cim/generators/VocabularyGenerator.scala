@@ -5,19 +5,19 @@ import amf.plugins.document.vocabularies.model.document.Vocabulary
 import amf.plugins.document.vocabularies.model.domain.{ClassTerm, DatatypePropertyTerm, ObjectPropertyTerm, PropertyTerm}
 import aml.cim.CIM
 import aml.cim.model.ConceptualModel
-import aml.cim.model.entities.EntityGroup
+import aml.cim.model.entities.ConceptualGroup
 
-class VocabularyGenerator(conceptualModel: ConceptualModel, entityGroup: EntityGroup) {
+class VocabularyGenerator(conceptualModel: ConceptualModel, concpetualGroup: ConceptualGroup) {
 
   def generate(): Vocabulary = {
-    val vocabulary = Vocabulary().withId(entityGroup.id).withName(entityGroup.name).withBase(CIM.NS.base)
-    entityGroup.description.foreach(vocabulary.withUsage)
+    val vocabulary = Vocabulary().withId(concpetualGroup.id).withName(concpetualGroup.name).withBase(CIM.NS.base)
+    concpetualGroup.description.foreach(vocabulary.withUsage)
     vocabulary.withDeclares(classTerms ++ propertyTerms)
   }
 
   lazy protected val classTerms: Seq[ClassTerm] = {
-    entityGroup.classes map { classId =>
-      val rdfsClass = conceptualModel.findClassById(classId).getOrElse(throw new Exception(s"Cannot find class '$classId' for functional area '${entityGroup.id}'"))
+    concpetualGroup.classes map { classId =>
+      val rdfsClass = conceptualModel.findClassById(classId).getOrElse(throw new Exception(s"Cannot find class '$classId' for functional area '${concpetualGroup.id}'"))
       val classTerm = ClassTerm().withId(classId).withName(rdfsClass.name)
       rdfsClass.displayName.foreach(classTerm.withDisplayName)
       rdfsClass.description.foreach(classTerm.withDescription)
@@ -29,13 +29,16 @@ class VocabularyGenerator(conceptualModel: ConceptualModel, entityGroup: EntityG
   }
 
   lazy protected val propertyTerms: Seq[PropertyTerm] = {
-    entityGroup.properties.map { propertyId =>
-      val rdfProperty = conceptualModel.findPropertyById(propertyId).getOrElse(throw new Exception(s"Cannot find property '$propertyId' for functional area '${entityGroup.id}"))
-      val propertyTerm: PropertyTerm = if (rdfProperty.isDataProperty) {
+    concpetualGroup.properties.map { propertyId =>
+      val rdfProperty = conceptualModel.findPropertyById(propertyId).getOrElse(throw new Exception(s"Cannot find property '$propertyId' for functional area '${concpetualGroup.id}"))
+      val propertyTerm: PropertyTerm = if (rdfProperty.ranges.isEmpty) {
+        DatatypePropertyTerm()
+      } else if (rdfProperty.isDataProperty) {
         DatatypePropertyTerm().withRange(DataType.Any)
       } else {
         ObjectPropertyTerm().withRange(rdfProperty.ranges.head)
       }
+
       propertyTerm.withId(propertyId).withName(rdfProperty.name)
       rdfProperty.displayName.foreach(propertyTerm.withDisplayName)
       rdfProperty.description.foreach(propertyTerm.withDescription)
@@ -47,7 +50,11 @@ class VocabularyGenerator(conceptualModel: ConceptualModel, entityGroup: EntityG
         }
       }
 
-      propertyTerm
-    }
+      if (rdfProperty.ranges.isEmpty) {
+        None
+      } else {
+        Some(propertyTerm)
+      }
+    } collect { case Some(x) => x }
   }
 }

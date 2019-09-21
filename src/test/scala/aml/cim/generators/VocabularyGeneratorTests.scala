@@ -14,7 +14,7 @@ class VocabularyGeneratorTests extends AsyncFunSuite with Utils with PlatformSec
     AMF.init() map { _ =>
       val jsonld = loadExample("concepts")
       val conceptualModel = new ConceptualModel(jsonld)
-      val entityGroup = conceptualModel.entityGroups.head
+      val entityGroup = conceptualModel.conceptualGroups.head
       val vocabulary = new VocabularyGenerator(conceptualModel, entityGroup).generate()
 
       val txt = new Aml10Renderer("application/yaml").generateString(new Vocabulary(vocabulary)).get().trim

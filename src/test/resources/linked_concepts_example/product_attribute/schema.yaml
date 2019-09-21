@@ -5,16 +5,16 @@ nodeMappings:
   DeviceUserSession:
     classTerm: cim.DeviceUserSession
     mapping:
-      DeviceId:
-        propertyTerm: cim.DeviceId
-        range: device_eg.Device
-        mandatory: true
       CreatedDate:
         propertyTerm: cim.CreatedDate
         range: dateTime
         mandatory: true
       SystemModstamp:
         propertyTerm: cim.SystemModstamp
+        range: dateTime
+        mandatory: true
+      LastModifiedDate:
+        propertyTerm: cim.LastModifiedDate
         range: dateTime
         mandatory: true
       Name:
@@ -25,13 +25,13 @@ nodeMappings:
         propertyTerm: cim.Id
         range: guid
         mandatory: true
+      DeviceId:
+        propertyTerm: cim.DeviceId
+        range: device_eg.Device
+        mandatory: true
       ExternalRecordId:
         propertyTerm: cim.ExternalRecordId
         range: string
-      LastModifiedDate:
-        propertyTerm: cim.LastModifiedDate
-        range: dateTime
-        mandatory: true
 external:
   cim: http://cloudinformationmodel.org/model/
 dialect: Product_AttributeEntityGroup

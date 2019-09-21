@@ -7,7 +7,7 @@ import org.scalatest.FunSuite
 class SchemasModelTests extends FunSuite with Utils  {
   test("it should load shacl shapes into the schemas model") {
     val jsonld = loadExample("schemas")
-    val conceptualModel = new SchemasModel(jsonld)
+    val conceptualModel = new SchemasModel(jsonld, Nil)
     val schemas = conceptualModel.shapes
     assert(schemas.nonEmpty)
     assert(schemas.size == 2)
@@ -33,7 +33,7 @@ class SchemasModelTests extends FunSuite with Utils  {
 
   test("it should load a functional area with all the schemas") {
     val jsonld = loadExample("schemas")
-    val schemasModel = new SchemasModel(jsonld)
+    val schemasModel = new SchemasModel(jsonld, Nil)
     val concepts = schemasModel.entityGroups
 
     assert(concepts.nonEmpty)
