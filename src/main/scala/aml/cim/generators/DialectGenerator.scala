@@ -157,6 +157,7 @@ class DialectGenerator(schemaModel: SchemasModel, conceptualGroup: ConceptualGro
         property.scalarRange.foreach { scalarRange =>
           if (scalarRange == CIM.cim("id")) {
             propertyMapping.withLiteralRange((Namespace.Shapes + "guid").iri())
+            propertyMapping.withUnique(true)
           } else if (scalarRange == (Namespace.Xsd + "decimal").iri()) {
             propertyMapping.withLiteralRange((Namespace.Xsd + "integer").iri())
           } else {

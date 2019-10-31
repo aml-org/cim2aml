@@ -1,46 +1,58 @@
 #%Dialect 1.0
-uses:
-  device_eg: ../assets/schema.yaml
 nodeMappings:
+  Device:
+    classTerm: Device
+    mapping:
+      Device_DeviceUserSessions:
+        propertyTerm: Device_DeviceUserSessions
+        range: DeviceUserSession
+        allowMultiple: true
+      Id:
+        propertyTerm: Id
+        range: guid
+        unique: true
+        mandatory: true
   DeviceUserSession:
-    classTerm: cim.DeviceUserSession
+    classTerm: DeviceUserSession
     mapping:
       CreatedDate:
-        propertyTerm: cim.CreatedDate
+        propertyTerm: CreatedDate
         range: dateTime
         mandatory: true
       Id:
-        propertyTerm: cim.Id
+        propertyTerm: Id
         range: guid
         unique: true
         mandatory: true
       LastModifiedDate:
-        propertyTerm: cim.LastModifiedDate
+        propertyTerm: LastModifiedDate
         range: dateTime
         mandatory: true
       ExternalRecordId:
-        propertyTerm: cim.ExternalRecordId
+        propertyTerm: ExternalRecordId
         range: string
       DeviceId:
-        propertyTerm: cim.DeviceId
-        range: device_eg.Device
+        propertyTerm: DeviceId
+        range: Device
         mandatory: true
       Name:
-        propertyTerm: cim.Name
+        propertyTerm: Name
         range: string
         mandatory: true
       SystemModstamp:
-        propertyTerm: cim.SystemModstamp
+        propertyTerm: SystemModstamp
         range: dateTime
         mandatory: true
 external:
   cim: http://cloudinformationmodel.org/model/
-dialect: Product_AttributeEntityGroup
+dialect: Cloud Information Model
 version: "0.1"
 documents:
   root:
     declares:
+      DeviceSchemas: Device
       DeviceUserSessionSchemas: DeviceUserSession
   fragments:
     encodes:
+      Device: Device
       DeviceUserSession: DeviceUserSession

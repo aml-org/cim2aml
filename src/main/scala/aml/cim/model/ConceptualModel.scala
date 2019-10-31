@@ -51,6 +51,25 @@ class ConceptualModel(val jsonld: Model) extends ModelHelper {
     }
   }
 
+  def globalConceptualGroup(location: String): ConceptualGroup = {
+    var accClasses : Set[String] = Set()
+    var accProperties: Set[String] = Set()
+
+    conceptualGroups.foreach { cg =>
+      accClasses = accClasses.union(cg.classes.toSet)
+      accProperties = accProperties.union(cg.properties.toSet)
+    }
+
+    ConceptualGroup(
+      id = CIM.NS.base,
+      name = "Cloud Information Model",
+      description = Some("Complete conceptual model for CIM"),
+      classes = accClasses.toSeq.sorted,
+      properties = accProperties.toSeq.sorted,
+      shapes = Nil,
+      location = Some(location)
+    )
+  }
 
   lazy val conceptualGroups: Seq[ConceptualGroup] = {
     val entityGroups = findInstancesOf(CIM.ENTITY_GROUP) map { fa =>
@@ -70,7 +89,7 @@ class ConceptualModel(val jsonld: Model) extends ModelHelper {
       )
     }
 
-    val attributeGroups = findInstancesOf(CIM.ATTRIBUTE_GROUP) map { fa =>
+    val attributeGroups = findInstancesOf(CIM.PROPERTY_GROUP) map { fa =>
       val id = fa.getURI
       val name = findProperty(id, RDFS_LABEL).map(_.getString).getOrElse(id.split("/").last)
       val description = findProperty(id, RDFS_COMMENT).map(_.getString)

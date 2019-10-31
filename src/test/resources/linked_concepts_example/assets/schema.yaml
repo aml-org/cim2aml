@@ -12,11 +12,12 @@ nodeMappings:
       Id:
         propertyTerm: cim.Id
         range: guid
+        unique: true
         mandatory: true
 external:
   cim: http://cloudinformationmodel.org/model/
 dialect: DeviceEntityGroup
-version: "1.0"
+version: "0.1"
 documents:
   root:
     declares:

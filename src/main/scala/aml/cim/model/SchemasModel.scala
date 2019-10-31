@@ -82,6 +82,23 @@ class SchemasModel(val jsonld: Model, ontology: Seq[ConceptualGroup]) extends Mo
     }
   }
 
+  def globalEntityGroup(location: String): ConceptualGroup = {
+    var accShape: Set[String] = Set()
+    entityGroups.foreach { eg =>
+      accShape = accShape.union(eg.shapes.toSet)
+    }
+
+    ConceptualGroup(
+      id = CIM.NS.base,
+      name = "Cloud Information Model",
+      description = Some("Canonical schema model for CIM"),
+      Nil,
+      Nil,
+      shapes = accShape.toSeq,
+      location = Some(location)
+    )
+  }
+
   lazy val entityGroups: Seq[ConceptualGroup] = {
     findInstancesOf(CIM.ENTITY_GROUP) map { fa =>
       val id = fa.getURI
@@ -118,7 +135,7 @@ class SchemasModel(val jsonld: Model, ontology: Seq[ConceptualGroup]) extends Mo
               val rangeShape = shapes.find(_.id == range).getOrElse(throw new Exception(s"Cannot find entity by ID ${range}"))
               entityGroup.dependencies += ShapeDependency(rangeEntityGroup, rangeShape) // = entityGroup.dependencies ++ Seq(ShapeDependency(rangeEntityGroup, rangeShape))
             case _ =>
-              println(s"Cannot find entity group for shape ID ${range} in entity group ${entityGroup.name}")
+              println(s"Cannot find entity group (1) for shape ID ${range} in entity group ${entityGroup.name}")
               // throw new Exception(s"Cannot find entity group for shape ID ${range}")
           }
         }
@@ -130,7 +147,7 @@ class SchemasModel(val jsonld: Model, ontology: Seq[ConceptualGroup]) extends Mo
             case Some(rangeEntityGroup) if rangeEntityGroup.id != entityGroup.id => // dependency
               entityGroup.pathDependencies += PathDependency(rangeEntityGroup, path) // = entityGroup.dependencies ++ Seq(ShapeDependency(rangeEntityGroup, rangeShape))
             case _ =>
-              println(s"Cannot find entity group for property ID ${path} in entity group ${entityGroup.name}")
+              println(s"Cannot find entity group (2) for property ID ${path} in entity group ${entityGroup.name}")
             // throw new Exception(s"Cannot find entity group for shape ID ${range}")
           }
         }
