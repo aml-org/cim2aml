@@ -135,8 +135,8 @@ class SchemasModel(val jsonld: Model, ontology: Seq[ConceptualGroup]) extends Mo
               val rangeShape = shapes.find(_.id == range).getOrElse(throw new Exception(s"Cannot find entity by ID ${range}"))
               entityGroup.dependencies += ShapeDependency(rangeEntityGroup, rangeShape) // = entityGroup.dependencies ++ Seq(ShapeDependency(rangeEntityGroup, rangeShape))
             case _ =>
-              println(s"Cannot find entity group (1) for shape ID ${range} in entity group ${entityGroup.name}")
-              // throw new Exception(s"Cannot find entity group for shape ID ${range}")
+              // println(s"Cannot find entity group (1) for shape ID ${range} in entity group ${entityGroup.name}")
+              throw new Exception(s"Cannot find entity group for shape ID ${range}")
           }
         }
 
@@ -146,9 +146,9 @@ class SchemasModel(val jsonld: Model, ontology: Seq[ConceptualGroup]) extends Mo
             case Some(rangeEntityGroup) if rangeEntityGroup.id == entityGroup.id => // ignore
             case Some(rangeEntityGroup) if rangeEntityGroup.id != entityGroup.id => // dependency
               entityGroup.pathDependencies += PathDependency(rangeEntityGroup, path) // = entityGroup.dependencies ++ Seq(ShapeDependency(rangeEntityGroup, rangeShape))
-            case _ =>
-              println(s"Cannot find entity group (2) for property ID ${path} in entity group ${entityGroup.name}")
-            // throw new Exception(s"Cannot find entity group for shape ID ${range}")
+            case range =>
+              // println(s"Cannot find entity group (2) for property ID ${path} in entity group ${entityGroup.name}")
+              throw new Exception(s"Cannot find entity group for shape ID ${range}")
           }
         }
       }

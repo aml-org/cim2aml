@@ -115,13 +115,15 @@ object RepositoryLoader extends PlatformSecrets {
 
   def main(args: Array[String]) = {
     AMF.init().get()
-    if (args.length != 1) {
-      println("Path to a directory containing CIM files must be provided as an argument")
+    if (args.length != 2) {
+      println("Path to a directory containing CIM files and to the context.jsonld file must be provided as an argument")
       System.exit(1)
     }
     val path = args(0)
+    val context = args(1)
     println(s"\n\nProcessing directory $path\n\n")
-    fromDirectory(path, "src/test/resources/context.jsonld")
+    println(s"\n\nProcessing context at $context\n\n")
+    fromDirectory(path, context)
   }
 
 }

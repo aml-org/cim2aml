@@ -1,6 +1,6 @@
 name := "cim2aml"
-
-version := "0.1"
+organization := "com.github.amlorg"
+version := "0.1.1"
 
 scalaVersion := "2.12.0"
 
@@ -9,9 +9,10 @@ resolvers +=
 
 publishTo := Some("GitHub Package Registry" at "https://maven.pkg.github.com/aml-org/cim2aml")
 credentials += Credentials("GitHub Package Registry","maven.pkg.github.com",
-  sys.env.getOrElse("GITHUB_USER", throw new Exception("GITHUB_USER not deined")),
-  sys.env.getOrElse("GITHUB_TOKEN", throw new Exception("GITHUB_TOKEN not defined"))
+  sys.env.getOrElse("GITHUB_USER", ""),
+  sys.env.getOrElse("GITHUB_TOKEN", "")
 )
+
 
 libraryDependencies += "com.github.amlorg" %% "amf-client" % "3.5.4"
 libraryDependencies += "io.circe" %% "circe-parser" % "0.11.1"
