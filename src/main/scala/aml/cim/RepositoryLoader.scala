@@ -32,7 +32,7 @@ object RepositoryLoader extends PlatformSecrets {
     val ontology = Seq(globalConceptualGroup)
     targetPath = new File(path + File.separator + "schema.yaml").getAbsolutePath
     val schemaModel = new SchemasModel(globalSchemaModel, ontology)
-    val dialect = new DialectGenerator(schemaModel, schemaModel.globalEntityGroup(targetPath), "0.1", ontology).generate()
+    val dialect = new DialectGenerator(schemaModel, schemaModel.globalSchemaGroup(targetPath), "0.1", ontology).generate()
     generated = new Aml10Renderer("application/yaml").generateString(new Dialect(dialect)).get().trim
     writeFile(targetPath, generated)
   }

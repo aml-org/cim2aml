@@ -82,6 +82,11 @@ class SchemasModel(val jsonld: Model, ontology: Seq[ConceptualGroup]) extends Mo
     }
   }
 
+  def globalSchemaGroup(location: String): ConceptualGroup = {
+    val conceptualGroup = globalEntityGroup(location)
+    conceptualGroup.copy(id = conceptualGroup.id.replace("model", "schema"))
+  }
+
   def globalEntityGroup(location: String): ConceptualGroup = {
     var accShape: Set[String] = Set()
     entityGroups.foreach { eg =>
@@ -136,6 +141,7 @@ class SchemasModel(val jsonld: Model, ontology: Seq[ConceptualGroup]) extends Mo
               entityGroup.dependencies += ShapeDependency(rangeEntityGroup, rangeShape) // = entityGroup.dependencies ++ Seq(ShapeDependency(rangeEntityGroup, rangeShape))
             case _ =>
               // println(s"Cannot find entity group (1) for shape ID ${range} in entity group ${entityGroup.name}")
+              // println(s"===> Cannot find entity group for shape ID ${range}")
               throw new Exception(s"Cannot find entity group for shape ID ${range}")
           }
         }
@@ -147,7 +153,8 @@ class SchemasModel(val jsonld: Model, ontology: Seq[ConceptualGroup]) extends Mo
             case Some(rangeEntityGroup) if rangeEntityGroup.id != entityGroup.id => // dependency
               entityGroup.pathDependencies += PathDependency(rangeEntityGroup, path) // = entityGroup.dependencies ++ Seq(ShapeDependency(rangeEntityGroup, rangeShape))
             case range =>
-              // println(s"Cannot find entity group (2) for property ID ${path} in entity group ${entityGroup.name}")
+              //println(s"Cannot find entity group (2) for property ID ${path} in entity group ${entityGroup.name}")
+              //println((s"===> Cannot find entity group for shape ID ${range}"))
               throw new Exception(s"Cannot find entity group for shape ID ${range}")
           }
         }
